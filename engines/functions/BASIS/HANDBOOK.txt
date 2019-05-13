@@ -1,0 +1,87 @@
+Handbook for Matlab Parallel BASISWritten by Stephen Wu (Origin: Panagiotis Angelikopoulos)Created on April 28, 2015-----Last update: 2015-10-24 by Stephen WuUpdate content: 
+1. (2015-06-02) add support for burn-in, issue of mnrnd resolved
+2. (2015-06-17) add run time tracking
+3. (2015-09-18) add min. initial values for optimization of annealing power
+4. (2015-10-24) support N_burn,minP,maxP having length not equal to indicated generation5. (2015-11-03) correct variable name for opt_setup in else-statement inside UserInput.m-----
+
+Reference: This program developed based on Ching and Chen 2007
+
+Warning:
+X [Problem solved] 1. mnrnd will lead to storage issue when number of samples is large (e.g. 90k),
+	change resampling implementation when large number of samples needed
+
+Special Features:
+1. User can set maximum length of MCMC chain to improve efficiency of parallelization,
+	perfect parallelization achieved when max. length is set to 1.
+	(Note: only unique samples are stored, and weights are multiplied based on number of samples
+	for each unique sample. Hence, MCMC chains are longer than the original TMCMC implementation)
+2. Annealing prior option is available, i.e., the annealing power can affect both likelihood and prior
+	(suggested to be used with proposal prior samples only)
+3. User can use samples from a proposal pdf at the first stage instead of samples from prior
+	(suggested to turn on both annealing prior and this proposal prior option)
+4. Absolute bounds for the samples can be set, which is equivalent to introducing an extra uniform prior,
+	samples exceeding the bounds are rejected. If many samples are closed to the bounds, this is an 
+	alert of using bigger bounds.
+5. Only unique samples are stored. Count of repeated samples is stored separately. 
+	Be caution when using the samples for predictions, etc.
+6. Count of acceptance and rejection of samples at each stage is stored for statistics purpose
+7. A matlab code for plotting results is also included for quick visualization (Plot_Results.m)
+8. A burn-in period applied to each MCMC chain in the run can be set through ’N_burn’ in User_Input
+
+Assumptions / Defaults:
+1. Stage 1 (runinfo.gen = 1) refers to the prior samples, where no MCMC run is performed.
+2. Likelihood function takes one sample at a time, i.e., 
+	need not to be able to take in multiple samples at one time
+3. Customized prior function is required to take multiple samples at one time,
+	input samples structured as [#samples x #dimension]
+	(Note: this assumption only used in BASIS_Worker at stage 1, user can change it if wanted]
+Program Structure:
+1. Run_Me - short file to execute ‘User_Input’ then ‘BASIS_Master’
+2. User_Input - prepare all parameters needed to run BASIS, stored in ‘sys_para’,
+	also initiate pool or cluster for parallelization
+3. BASIS_Master - main body that controls the flow of BASIS algorithm
+	(i) prepare initial samples
+	(ii) distribute work to ‘BASIS_Worker’ for each available cpu
+	(iii) collect and analyze results, prepare for next stage
+4. BASIS_Worker - run on each available cpu to
+	(i) calculate likelihood and prior values for samples
+	(ii) perform assigned MCMC chains
+
+Main variables:
+1. sys_para - 1x1 struct
+	(a) created in ‘User_Input.m’, not modified during the program running
+	(b) default values for all parameters are stored in the backup file
+		‘User_Input_Defaults.m’ (do not touch!)
+	(c) details of meaning of each parameters can be found in ‘User_Input.m’
+2. runinfo - 1x1 struct
+	(a) created in ‘BASIS_Master.m’, record the parameters during BASIS run
+	(b) all intermediate results are saved in runinfo, as well as final results
+	(c) detail of the struct
+		.gen - count of current generation (stage)
+		.p - vector of annealing powers until current stage
+		.TF_fin - boolean to track if next stage is final stage (p -> 1)
+			(Note: equals 0 if program quit by exceeding max. stages allowed)
+		.theta - all distinct samples at current stage [#sample x #dimension]
+		.Ns - count of samples being repeated [#sample x 1]
+		.w - weight of samples used in resampling step [#sample x 1]
+			(Note: Ns is already considered in the weight, this is final weight of sample)
+		.pri - ln(Prior) of samples [#sample x 1]
+		.lik - ln(Likelihood) of samples [#sample x 1]
+		.out_lik - cells of extra outputs from likelihood function {#sample x 1}
+		.N_accept - vector of how many times sample being accepted during MCMC run at each stage
+		.N_reject - vector of how many times sample being rejected during MCMC run at each stage
+		.cov_s - scaled covariance matrix for theta (sample) used in proposal of MCMC walk
+			(Note: scaled means beta^2 in included already)
+		.cv_err2 - vector of (coefficient of variance of samples - preset tolerance cv_tol)^2
+			(Note: length = total gen - 1, because not calculated in the final stage)
+		.S_lnEv - vector of partial ln(Evidence) at each stage (not calculated in final stage)
+		.lnEv - final estimate of ln(Evidence) = sum(S_lnEv)
+			(Note: not exist if program quit by exceeding max. stages allowed)
+3. out_master - 1x1 struct
+	(a) created in ‘BASIS_Master.m’, record the final output of BASIS run
+	(b) detail of the struct
+		[Contain all properties in runinfo with following add-on]
+		.mean_fin - vector of mean of the final sample set in each dimension
+		.cov_fin - covariance matrix for the final sample set
+		.runtime - total running time of algorithm inside BASIS_Master.m
+

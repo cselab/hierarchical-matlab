@@ -1,0 +1,37 @@
+I. SOFTWARE COMPONENTS
+
+You will find the following software packages:
+
+Main algorithm)
+- BASIS_Master.m: control the whole algorithm flow and distribute jobs
+- BASIS_Worker.m: workers that receive individual parallelized job from Master
+- User_Input.m: prepare system parameters to run BASIS_Master.m
+- User_Input_Defaults.m: a backup copy of the defaulted system parameter values
+- Run_Me.m: a dummy file to run the algorithm directly when all setup done
+
+Supporting materials)
+- Plot_Results.m: plotting the results of BASIS directly
+- HANDBOOK.txt: overview of the algorithm structure and recent updates
+- README.txt: this file
+- AUTHORS: contains all author and contact information
+- COPYING: legal terms for using this package
+
+Example)
+- Run_Me_Example.m: main code to run BASIS on the two given examples
+- User_Input_Example.m: setup system parameters for the example
+- Lik_Banana.m: a sample log-likelihood function for the banana example
+- Lik_Gauss_3D.m: a sample log-likelihood function for the 3D Gaussian example
+
+
+II. PREREQUISITES
+
+- MATLAB with optimization and parallel package (this package uses parpool)
+
+
+III. NOTES
+
+Read HANDBOOK.txt for overview of the algorithm usage
+Look into User_Input.m for the important parameters and their purpose
+
+Ask for help, report any problems!: wust@ethz.ch 
+
