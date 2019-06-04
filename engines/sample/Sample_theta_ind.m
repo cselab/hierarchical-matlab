@@ -1,12 +1,13 @@
 % sample the parameters for all the data set assuming independency, 
 % i.e., sample from p(theta_i|data_i,model_i)
 
+warning('off','MATLAB:dispatcher:UnresolvedFunctionHandle')
 
 clear
 
 addpath('../functions/BASIS/');
 
-Nsets = 5;
+Nsets =   10;
 
 tic
 

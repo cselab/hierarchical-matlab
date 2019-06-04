@@ -22,7 +22,7 @@ uncertainty in the predictions
 ### step 1: posterior of individual theta_i
 
   - go to /sample/ and run Sample_theta_ind.m  (it will take some time)
-  - go to /postprocess/ and run "load ../../data/IND_theta_002.mat; plotmatrix_hist(out_master.theta);" to see histogram of the parameters for the 2nd data set
+  - go to ../postprocess/ and run "load ../../data/IND_theta_002.mat; plotmatrix_hist(out_master.theta);" to see histogram of the parameters for the 2nd data set
 
 
 ### step 2: sample hyperparameters

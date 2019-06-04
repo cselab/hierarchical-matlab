@@ -7,13 +7,10 @@ clear
 
 addpath('../functions/BASIS/');
 
-% Nsets = 1;
 
 tic
 
-for k = 1:5
-
-%     fprintf('Bayes on data set: %03d / %4d \n',k,Nsets)
+for k = 1:1
 
     sys_para = User_Input_unif_theta_post( k );
     BASIS = BASIS_Master(sys_para);

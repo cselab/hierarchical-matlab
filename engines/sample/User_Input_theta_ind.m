@@ -40,7 +40,7 @@ sys_para.max_cLen = 1;
 %% System settings
 
 % Number of samples at each intermediate stage
-sys_para.N_s = 50000;
+sys_para.N_s = 5000;
 % Number of samples at the last stage (default: same as N_s)
 sys_para.N_s_fin = sys_para.N_s;
 % Max. number of stages (default: 1000)

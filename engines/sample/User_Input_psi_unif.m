@@ -83,7 +83,7 @@ sys_para.hard_bds = [ 250,  1e-3,    0,   1e-3,   -5,   0,    1e-3,  1e-3  ; ...
 addpath('../functions/hierarchical_model/');
 sys_para.lik.name = 'loglike_unif_psi';
 N = 5;          % number of data files
-Ns_i = 50000;   % number of samples for each individual
+Ns_i = 5000;   % number of samples for each individual
 for i=1:N
     tmp = load([ data_folder 'IND_theta_' sprintf('%03d',i) '.mat']);
     sys_para.lik.para.theta{i} = tmp.out_master.theta(1:Ns_i,:);

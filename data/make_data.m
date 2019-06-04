@@ -1,13 +1,13 @@
 %   Create synthetic data using the model defined in my_model
 %
 clear
-folder_name = '../data/';
+folder_name = './';
 
-addpath('functions/logistic_model/');
+addpath('../engines/functions/logistic_model/');
 
 FLAG = 1;
 
-N = 5; %number of different data sets
+N = 10; %number of different data sets
 x = repmat( 0:0.5:10, N,1 );
 
 
@@ -24,7 +24,7 @@ for i = 1:N
     theta(i,1) = 300;
     theta(i,2) = normrnd(40,10);
     theta(i,3) = lognrnd(0,0.5);
-    theta(i,4) = 2;
+    theta(i,4) = 5;
     
     % evaluate the model at the nominal values
     y(i,:) = my_model( x(i,:), theta(i,1:3), FLAG );
@@ -46,6 +46,11 @@ for i = 1:N
     
 end
 %%
-plot(x',y','-x')
+pl = plot(x',y','.-');
+set(pl,'LineWidth',3);
+set(pl,'MarkerSize',30)
+set(gca,'FontSize',20);
+grid on
+axis tight
 
 

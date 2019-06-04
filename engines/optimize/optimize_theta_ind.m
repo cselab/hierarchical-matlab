@@ -1,6 +1,8 @@
 % infer the parameters for the k-th data set by optimizing the likelihood
 clc; clear
 
+warning('off','MATLAB:dispatcher:UnresolvedFunctionHandle')
+
 
 k = 1;
 
@@ -13,7 +15,6 @@ addpath('../functions/CMA')
 addpath('../functions/logistic_model/')
 
 loglike_func = 'loglike';
-
 
 
 file_name = [ data_folder 'data_set_' sprintf('%03d',k) '.mat'];

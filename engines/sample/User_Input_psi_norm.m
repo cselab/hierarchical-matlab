@@ -76,10 +76,10 @@ sys_para.hard_bds = [  0,    0,  -100,  0,      0,   0,   0,   0; ...
 % Note: likelihood function must be structured as (order specific)
 %   output - log(likelihood value), struct of other output
 %   input - sample, struct of all necessary input parameters (in .para)
-addpath('functions/hierarchical_model/');
+addpath('../functions/hierarchical_model/');
 sys_para.lik.name = 'loglike_norm_psi';
 N = 5;
-Ns_i = 2000;
+Ns_i = 5000;
 for i=1:N
     tmp = load([ data_folder 'IND_theta_' sprintf('%03d',i) '.mat']);
     sys_para.lik.para.theta{i} = tmp.out_master.theta(1:Ns_i,:);
